@@ -1,15 +1,49 @@
-## Put comments here that give an overall description of what your
-## functions do
+## I have made 2 functions to saitsify the requirements of the second programming assignment.
+## These functions are designed to cache the inverse of a matrix, becuase matrix is usually a costly
+## computation and there is a time benefit from caching this calculation.
 
-## Write a short comment describing this function
+
+## The first function, 'makeCacheMatrix', creates a special "matrix" object that can cache its inverse
 
 makeCacheMatrix <- function(x = matrix()) {
-
+    m <- NULL
+    set <- function(y) {
+        x <<- y
+        m <<- NULL
+    }
+    get <- function() x
+    setinverse <- function(solve) m <<- solve
+    getinverse <- function() m
+    list(set = set, get = get,
+    setinverse = setinverse,
+    getinverse = getinverse)
 }
 
 
-## Write a short comment describing this function
+## The second function, 'cacheSolve', computes the inverse of the special "matrix" returned by makeCacheMatrix
 
 cacheSolve <- function(x, ...) {
-        ## Return a matrix that is the inverse of 'x'
+    m <- x$getinverse()
+    if(!is.null(m)) {
+        message("getting cached data")
+        return(m)
+    }
+    data <- x$get()
+    m <- solve(data, ...)
+    x$setinverse(m)
+    m
 }
+
+
+## Example of both of the functions working to return a matrix that is the inverse of 'x'
+
+B <- makeCacheMatrix(matrix(c(4, 2, 7, 6),
+nrow=2,
+ncol=2))
+cacheSolve(B)
+
+## Because the inverse has already been calculated (and the matrix has not changed), then the cachesolve
+## function now retrieves the inverse from the cache and types out the words 'getting cached data'
+## before printing the result
+
+cacheSolve(B)
